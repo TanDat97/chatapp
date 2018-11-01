@@ -1,0 +1,3 @@
+export const EXPLORE_ADD_IMAGES = 'EXPLORE_ADD_IMAGES'
+export const CLEAR_IMAGES = 'CLEAR_IMAGES'
+
