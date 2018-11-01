@@ -1,9 +1,5 @@
-import {
-  SIGN_IN_GOOGLE_SUCCESS,
-  SIGN_IN_GOOGLE_FAIL,
-  SIGN_OUT,
-} from '../constants/ActionType'
-import { getFirebase, reactReduxFirebase } from 'react-redux-firebase'
+import * as actionType from '../constants/ActionType'
+import { getFirebase } from 'react-redux-firebase'
 
 export const signInGoogle = (credential)  => { 
   return (dispatch, getState) => {
@@ -15,12 +11,12 @@ export const signInGoogle = (credential)  => {
     )
     .then(()=>{
       dispatch({
-        type: SIGN_IN_GOOGLE_SUCCESS
+        type: actionType.SIGN_IN_GOOGLE_SUCCESS
       })
     })
     .catch((err)=>{
       dispatch({
-        type: SIGN_IN_GOOGLE_FAIL,
+        type: actionType.SIGN_IN_GOOGLE_FAIL,
         err: err,
       })
     })
@@ -33,7 +29,7 @@ export const signOut = () => {
     firebase.auth().signOut()
     .then(()=>{
       dispatch({
-        type: SIGN_OUT
+        type: actionType.SIGN_OUT
       })
     })
   }
