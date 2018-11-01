@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import User from '../message/user';
+import Message from '../message/message';
+
+const backgrey ={
+  background: "#444753",
+}
 
 class Dashboard extends Component {
   render() {
@@ -7,12 +13,12 @@ class Dashboard extends Component {
     if (this.props.auth.auth.isEmpty === false) {
       return (
         <div className="dashboard container">
-          <div className="row">
+          <div className="row" style={backgrey}>
             <div className="col-4">
-              Danh sách người dùng
+              <User/>
             </div>
-            <div className="col-8 blue">
-              Nội dung tin nhắn
+            <div className="col-8 backmessage">
+              <Message/>
             </div>
           </div>
         </div>
@@ -22,7 +28,6 @@ class Dashboard extends Component {
         <div>Loading....</div>
       )
     }
-    
   }
 }
 

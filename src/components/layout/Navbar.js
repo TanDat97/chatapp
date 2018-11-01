@@ -5,7 +5,6 @@ import SignedInLinks from './SignedInLinks';
 import SignedOutLinks from './SignedOutLinks';
 
 const Navbar = (props) => {
-  console.log(props.auth);
   const uid = props.auth.uid != null ? <SignedInLinks/>:<SignedOutLinks/>;
   return (
     <nav className="nav-wrapper blue darken-4">

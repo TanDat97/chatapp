@@ -6,7 +6,7 @@ import myReducer from "./reducers/index";
 import { Provider } from "react-redux";
 import { createStore,compose, applyMiddleware } from 'redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import getMiddlewares from './config/middlewares';
+// import getMiddlewares from './config/middlewares';
 import firebaseConfig from './config/firebaseConfig';
 
 import './index.css';

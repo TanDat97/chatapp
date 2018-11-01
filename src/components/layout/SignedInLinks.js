@@ -1,7 +1,7 @@
-import React from 'react'
+import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledButtonDropdown } from 'reactstrap';
+import { Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { signOut } from '../../actions/index';
 
 const avatarStyle = {
@@ -19,6 +19,7 @@ const avatarStyle = {
 };
 const logOut = {
   color: "black",
+  lineHeight: "normal",
 }
 
 class SignedInLinks extends React.Component {
@@ -42,14 +43,14 @@ class SignedInLinks extends React.Component {
       <div>
         <ul className="right">
           <li></li>
-          <li><img src={this.props.auth.photoURL} style={avatarStyle} /></li>
+          <li><img src={this.props.auth.photoURL} style={avatarStyle} alt=""/></li>
 
             <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
               <Button id="caret" color="primary">{this.props.auth.displayName}</Button>
               <DropdownToggle caret color="primary" size="sm"/>
               <DropdownMenu>
                 <DropdownItem header>Account</DropdownItem>
-                <DropdownItem>User Info</DropdownItem>
+                <DropdownItem style={logOut}>User Info</DropdownItem>
                 <DropdownItem divider/>
                 <DropdownItem><NavLink to='/welcome' onClick={this.props.signOut} style={logOut}>LOGOUT</NavLink></DropdownItem>
               </DropdownMenu>
