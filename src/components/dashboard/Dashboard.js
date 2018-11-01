@@ -8,10 +8,10 @@ class Dashboard extends Component {
       return (
         <div className="dashboard container">
           <div className="row">
-            <div className="col s12 m4 user">
+            <div className="col-4">
               Danh sách người dùng
             </div>
-            <div className="col s12 m8 blue">
+            <div className="col-8 blue">
               Nội dung tin nhắn
             </div>
           </div>

@@ -6,12 +6,12 @@ import SignedOutLinks from './SignedOutLinks';
 
 const Navbar = (props) => {
   console.log(props.auth);
-  const isEmpty = props.auth.uid != null ? <SignedInLinks/>:<SignedOutLinks/>;
+  const uid = props.auth.uid != null ? <SignedInLinks/>:<SignedOutLinks/>;
   return (
     <nav className="nav-wrapper blue darken-4">
       <div className="container left">
-        <Link to='/' className="brand-logo">DriffChat</Link>
-        {isEmpty}
+        <Link to='/' className="brand-logo left">DriffChat</Link>
+        {uid}
       </div>
     </nav>
   )
