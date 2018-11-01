@@ -1,19 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import SignedInLinks from './SignedInLinks';
 import SignedOutLinks from './SignedOutLinks';
 
-const Navbar = () => {
+const Navbar = (props) => {
+  console.log(props.auth);
+  const isEmpty = props.auth.uid != null ? <SignedInLinks/>:<SignedOutLinks/>;
   return (
-    <nav className="nav-wrapper grey darken-3">
-    
+    <nav className="nav-wrapper blue darken-4">
       <div className="container left">
         <Link to='/' className="brand-logo">DriffChat</Link>
+        {isEmpty}
       </div>
-        <SignedInLinks/>
-        <SignedOutLinks/>
     </nav>
   )
+} 
+
+
+const mapStateToProps = (state) => {
+  return {
+    auth: state.firebase.auth
+  }
 }
 
-export default Navbar
+export default connect(mapStateToProps,null)(Navbar)
+
