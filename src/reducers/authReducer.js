@@ -6,7 +6,7 @@ const initState = {}
 const signInGoogle = (state = initState, action) => {
     switch (action.type) {
         case actionType.SIGN_IN_GOOGLE_SUCCESS:
-        console.log("login success");
+            console.log("login success");
             return {
                 ...state,
                 authERR: null,

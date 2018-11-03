@@ -21,6 +21,7 @@
     "react-scripts": "2.1.0",
     "reactstrap": "^6.5.0",
     "redux": "^3.5.2",
+    "redux-firestore": "^0.5.8",
     "redux-freeze": "^0.1.7",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0"

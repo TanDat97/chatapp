@@ -33,7 +33,8 @@ $gray: #92959E;
 
     ul {
         padding: 20px;
-        max-height: 600px;
+        height: 600px;
+        overflow-y: scroll;
         li {
             padding-bottom: 20px;
         }
@@ -230,4 +231,8 @@ $gray: #92959E;
     content: " ";
     clear: both;
     height: 0;
+}
+
+.name {
+    color: white;
 }
