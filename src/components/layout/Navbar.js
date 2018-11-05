@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { firestoreConnect } from 'react-redux-firebase';
 import SignedInLinks from './SignedInLinks';
 import SignedOutLinks from './SignedOutLinks';
 
@@ -19,9 +21,12 @@ const Navbar = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    auth: state.firebase.auth
+    auth: state.firebase.auth,
   }
 }
 
-export default connect(mapStateToProps,null)(Navbar)
-
+export default compose(
+  connect(mapStateToProps,null),
+  firestoreConnect((props) => [
+    {collection: 'users'},
+])) (Navbar)

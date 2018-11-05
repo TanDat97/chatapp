@@ -65,8 +65,8 @@ $gray: #92959E;
     background: #F2F5F8;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-
     color: #434651;
+    width: 99%;
 
     .chat-header {
         padding: 10px;
@@ -141,11 +141,12 @@ $gray: #92959E;
 
         .my-message {
             background: $green;
+            text-align: left;
         }
 
         .other-message {
             background: $blue;
-
+            text-align: right;
             &:after {
                 border-bottom-color: $blue;
                 left: 93%;

@@ -2,7 +2,7 @@ import React from 'react';
 
 import '../../style/message.scss';
 
-const Message = ({user}) => {
+const Message = ({message}) => {
     return (
         <div>My message</div>
     )

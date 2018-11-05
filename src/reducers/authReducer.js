@@ -9,19 +9,19 @@ const signInGoogle = (state = initState, action) => {
             console.log("login success");
             return {
                 ...state,
-                authERR: null,
+                auth: "login google success",
             };     
         case actionType.SIGN_IN_GOOGLE_FAIL:
             return {
                 ...state,
-                authERR: 'login failed',
+                auth: 'login failed',
             };    
         case actionType.SIGN_OUT:
             console.log('logout success');
             return {
                 ...state,
                 auth: "log out success",
-            }       
+            }
         default:
             return state;
     }
