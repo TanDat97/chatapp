@@ -4,7 +4,7 @@ const initState = {}
 
 const chatReducer = (state = initState, action) => {
     switch (action.type) {
-        case actionType.CONVERSATION:
+        case actionType.CREATE_CONVERSATION:
         console.log('CREATE_CONVERSATION');
             return {
                 ...state,
@@ -14,9 +14,14 @@ const chatReducer = (state = initState, action) => {
             return {
                 conversation: action.conversation,
             }
+        case actionType.SEND_MESSAGE:
+            console.log('SEND_MESSAGE');
+            return {
+                send: action.send,
+            }
         case actionType.ERROR:
             return {
-                err: action.err
+                err: action.err,
             }
         default:
             return state;

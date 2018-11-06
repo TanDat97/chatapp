@@ -4,7 +4,7 @@ import { isEmpty } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import moment from 'moment';
-import {createConversation, getConversation } from '../../actions/index';
+import { getConversation } from '../../actions/index';
 import '../../style/message.scss';
 
 // const color1={
@@ -15,10 +15,13 @@ import '../../style/message.scss';
 // };
 
 const ChatFrame = (props) => {
-    const conversation = props.conversation;
+    var conversation = {};
     const authId = props.authId;
     const chatUserId = props.chatUserId;
-    console.log(props);
+    const converID = props.hashConversationID(authId,chatUserId);
+    if(!isEmpty(props.converdata)){
+        conversation = props.converdata.filter(conver => conver.id === converID.toString()); 
+    }  
 
     if(isEmpty(conversation) && chatUserId==="") {
         return (
@@ -31,7 +34,7 @@ const ChatFrame = (props) => {
     } else {
         return (
             <ul>
-                {conversation.history.map ((each, index) => {
+                {conversation[0].history.map ((each, index) => {
                     const sec = parseInt(each.sendAt)
                     const date = moment(new Date(sec)).format('l') + " - "  +moment(new Date(sec)).format('LT')
                     if (each.idSend === authId)
@@ -67,41 +70,15 @@ const ChatFrame = (props) => {
 }
 
 const mapStateToProps = (state ,ownProps) => {
-    const conversation = ownProps.conversation
     return {
-        authId: ownProps.authId,
-        chatUserId: ownProps.chatUserId,
-        conversation: conversation,
+        converdata: state.firestore.ordered.conversation,
     }
   }
   
 const mapDispatchToProps =(dispatch) => {
     return {
-        createConversation: (authId, chatUserId) => dispatch(createConversation(authId,chatUserId)),
         getConversation: (authId, chatUserId) => dispatch(getConversation(authId, chatUserId)),
     }
   }
   
   export default withRouter(connect(mapStateToProps,mapDispatchToProps)(ChatFrame))
-
-
-    /* <li className="clearfix">
-                    <div className="message-data align-right">
-                    <span className="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
-                    <span className="message-data-name" >Olia</span> <i className="fa fa-circle me"></i>
-                    
-                    </div>
-                    <div className="message other-message float-right">
-                    Hi Vincent, how are you? How is the project coming along?
-                    </div>
-                </li>
-                
-                <li>
-                    <div className="message-data align-left">
-                    <span className="message-data-name"><i className="fa fa-circle online"></i> Vincent</span>
-                    <span className="message-data-time">10:12 AM, Today</span>
-                    </div>
-                    <div className="message my-message">
-                    Are we meeting today? Project has been already finished and I have results to show you.
-                    </div>
-                </li> */

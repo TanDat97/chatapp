@@ -38,10 +38,12 @@ export const signInGoogle = (profile)  => {
           photoURL: response.user.photoURL,
           uid: response.user.uid,
           status: "online",
-        }).then((resAddUser) => {
+        })
+        .then((resAddUser) => {
           console.log("add new user account");
           dispatch({ type: actionType.SIGN_IN_GOOGLE_SUCCESS});
-        }).catch(err => {
+        })
+        .catch(err => {
           dispatch({ type: actionType.SIGN_IN_GOOGLE_FAIL, }, err);
         });
       }
@@ -67,18 +69,15 @@ export const signOut = () => {
   }
 }
 
-export const getChatList = (id) => {
-  return (dispatch, getState, ) => {
+export const getConversation = (authId, chatUserId) => {
+  return (dispatch, getState ) => {
     const firestore = firebase.firestore();
-    firestore.collection('users/'+id+'/chatlist').get()
+    const hashId=hashConversationID(authId, chatUserId);
+    firestore.collection('conversation').doc(hashId.toString()).get()
     .then((response) => {
-      var chatlist = [];
-      response.forEach(function(doc) {
-        chatlist.push(doc.data());
-      });
       dispatch({
-        type: actionType.GET_CHAT_LIST,
-        chatlist: chatlist,
+        type: actionType.GET_CONVERSATION,
+        conversation: response.data() ? response.data() : {},
       });
     })
     .catch((err)=>{
@@ -90,31 +89,20 @@ export const getChatList = (id) => {
   }
 }
 
-export const createConversation = (authId, chatUserId) => {
+export const createConversation = (authId, chatUserId, text, displayName) => {
   return (dispatch, getState ) => {
     const firestore = firebase.firestore();
     const hashId=hashConversationID(authId, chatUserId);
-
-    var date = new Date(); // some mock date
-    var createMilisecond = date.getTime();
-
+    const date = new Date(); // some mock date
+    const createMilisecond = date.getTime();
     firestore.collection('conversation').doc(hashId.toString()).set({
         createAt: createMilisecond,
         history: [
           {
-            idSend:"linh",
+            idSend: authId,
             sendAt: createMilisecond,
-            text: 'abc',
-          },
-          {
-            idSend:"dat",
-            sendAt: createMilisecond,
-            text: 'vcnm',
-          },
-          {
-            idSend:"linh",
-            sendAt:  createMilisecond,
-            text: 'asdfsadf',
+            text: text,
+            displayName: displayName,
           }
           ],
         lastMessage: createMilisecond,
@@ -125,7 +113,7 @@ export const createConversation = (authId, chatUserId) => {
     })
     .then((response) => {
       dispatch({
-        type: actionType.CONVERSATION,
+        type: actionType.CREATE_CONVERSATION,
       });
     })
     .catch((err)=>{
@@ -134,19 +122,28 @@ export const createConversation = (authId, chatUserId) => {
         err: err,
       })
     })
-    
   }
 }
 
-export const getConversation = (authId, chatUserId) => {
+export const sendMessage = (authId, chatUserId, text, displayName, history) => {
   return (dispatch, getState ) => {
     const firestore = firebase.firestore();
     const hashId=hashConversationID(authId, chatUserId);
-    firestore.collection('conversation').doc(hashId.toString()).get()
-    .then((response) => {
+    const date = new Date(); // some mock date
+    const createMilisecond = date.getTime();
+    firestore.collection('conversation').doc(hashId.toString()).update({
+      history: [...history, {
+        displayName: displayName, 
+        idSend: authId, 
+        sendAt: createMilisecond,
+        text: text
+      }],
+      lastMessage: createMilisecond,       
+    })
+    .then(() => {
       dispatch({
-        type: actionType.GET_CONVERSATION,
-        conversation: response.data(),
+        type: actionType.SEND_MESSAGE,
+        send: 'success',
       });
     })
     .catch((err)=>{
@@ -155,6 +152,5 @@ export const getConversation = (authId, chatUserId) => {
         err: err,
       })
     })
-    
   }
 }
