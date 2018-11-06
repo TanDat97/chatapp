@@ -11,7 +11,7 @@ import ChatFrame from '../message/ChatFrame';
 import SendMessage from '../message/SendMessage';
 import '../../style/message.scss';
 
-const backgrey ={
+const backgrey = {
   background: "#444753",
 }
 
@@ -71,7 +71,7 @@ class Dashboard extends Component {
                   chatUserId = {this.state.chatUserId}
                   hashConversationID = {this.hashConversationID}
                 />
-                <div className="chat-history">
+                <div id="chat-history" className="chat-history">
                   <ChatFrame 
                     authId = {authUser.uid}
                     chatUserId = {this.state.chatUserId}

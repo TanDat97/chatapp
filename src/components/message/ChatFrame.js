@@ -7,13 +7,6 @@ import moment from 'moment';
 import { getConversation } from '../../actions/index';
 import '../../style/message.scss';
 
-// const color1={
-//     color: "#AED2A6"
-//   };
-// const color2={
-//     color: "#DAE9DA"
-// };
-
 const ChatFrame = (props) => {
     var conversation = {};
     const authId = props.authId;

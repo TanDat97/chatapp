@@ -34,7 +34,7 @@ $gray: #92959E;
     ul {
         padding: 20px;
         height: 600px;
-        overflow-y: scroll;
+        overflow-y: auto;
         li {
             padding-bottom: 20px;
         }
@@ -102,7 +102,7 @@ $gray: #92959E;
     .chat-history {
         padding: 30px 30px 20px;
         border-bottom: 2px solid white;
-        overflow-y: scroll;
+        overflow-y: auto;
         height: 450px;
 
         .message-data {
@@ -235,4 +235,8 @@ $gray: #92959E;
 
 .name {
     color: white;
+}
+
+.backgrey {
+    background: "#444753",
 }
