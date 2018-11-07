@@ -5,4 +5,6 @@ export const ERROR = 'ERROR';
 export const CREATE_CONVERSATION = 'CREATE_CONVERSATION';
 export const GET_CONVERSATION = 'GET_CONVESATION';
 export const SEND_MESSAGE = "SEND_MESSAGE";
+export const STAR = "STAR";
+export const SEARCH_BY_NAME = 'SEARCH_BY_NAME';
 

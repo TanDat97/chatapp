@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import ReactLoading from "react-loading";
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { firestoreConnect } from 'react-redux-firebase';
+import { firestoreConnect, isEmpty } from 'react-redux-firebase';
 
-import { createConversation, getConversation } from '../../actions/index';
+import { getConversation, star, searchByName } from '../../actions/index';
 import Friends from'../message/Friends';
 import HeaderFrame from '../message/HeaderFrame';
 import ChatFrame from '../message/ChatFrame';
@@ -27,41 +27,56 @@ class Dashboard extends Component {
     var hashA = 0
     var hashB = 0
     for (var i = 0; i<a.length; i++) {
-        var temp = a.charCodeAt(i)
-        hashA +=  temp
+      var temp = a.charCodeAt(i)
+      hashA +=  temp
     }
     for (i = 0; i<b.length; i++) {
-        temp = b.charCodeAt(i)
-        hashB +=  temp
+      temp = b.charCodeAt(i)
+      hashB +=  temp
     }
     return hashA+hashB
   }
 
   clickUser (userUID) { 
-      console.log(userUID);
-      this.setState({
-        chatUserId: userUID
-      })
-      this.props.getConversation(this.props.auth.uid,userUID)
+    console.log(userUID);
+    this.setState({
+      chatUserId: userUID
+    })
+    // this.props.getConversation(this.props.auth.uid,userUID);
+  }
+
+  findStarId(authId, users) {
+    var user = users.filter(user => user.id === authId);
+    return user[0].star;
   }
 
   render() {
     var authUser = this.props.auth;
     var users = this.props.users;
-    if(users)
+    var starId = '1';
+    var friendReducer = this.props.friendReducer;
+    if(users) {
       users = users.filter(user => user.id !== authUser.uid);
+      starId = this.findStarId(authUser.uid, this.props.users);
+    }
     if (authUser.isEmpty === false) {   
       return (
         <div className="dashboard container">
-          <div className="row" style={backgrey}>
+          <div className="row" style={backgrey}>   
             <div className="col-4 people-list">
               <div className="search">
-                <input type="text" placeholder="search" />
+                <input type="text" placeholder="search"
+                  onChange={e => {
+                    e.preventDefault()
+                    this.props.searchByName(e.target.value, users);
+                  }}
+                />
                 <i className="fa fa-search"></i>
               </div>
               <Friends 
-                friendsList = {users} 
+                friendList = {friendReducer.name === null||(isEmpty(friendReducer))?users:friendReducer.searchResult}
                 onClick = {this.clickUser.bind(this)}
+                searchByName = {this.props.searchByName}
               />  
             </div>
             <div className="col-8 backmessage">
@@ -69,7 +84,9 @@ class Dashboard extends Component {
                 <HeaderFrame 
                   authId = {authUser.uid}
                   chatUserId = {this.state.chatUserId}
+                  starId = {starId}
                   hashConversationID = {this.hashConversationID}
+                  starChange = {this.props.star}
                 />
                 <div id="chat-history" className="chat-history">
                   <ChatFrame 
@@ -98,18 +115,21 @@ class Dashboard extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state);
   return {
-    auth: state.firebase.auth,
     users: state.firestore.ordered.users,
     converdata: state.firestore.ordered.conversation,
+    auth: state.firebase.auth,
     conversation: state.chatReducer.conversation,
+    friendReducer: state.friendReducer,
   }
 }
 
 const mapDispatchToProps =(dispatch) => {
   return {
-    createConversation: (authId, chatUserId) => dispatch(createConversation(authId,chatUserId)),
     getConversation: (authId, chatUserId) => dispatch(getConversation(authId, chatUserId)),
+    star: (authId, chatUserId) => dispatch(star(authId, chatUserId)),
+    searchByName: (name, friendList) => dispatch(searchByName(name, friendList)),
   }
 }
 

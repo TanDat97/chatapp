@@ -7,7 +7,6 @@ import {createConversation, sendMessage, getConversation } from '../../actions/i
 import '../../style/message.scss';
 
 const SendMessage = (props) => {
-    console.log(props);
     var conversation = {};
     const displayName = props.displayName;
     const authId = props.authId;

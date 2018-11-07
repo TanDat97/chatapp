@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactLoading from "react-loading";
-// import { connect } from 'react-redux';
+import { connect } from 'react-redux';
 import '../../style/message.scss';
+import { isEmpty } from 'react-redux-firebase';
 
 const avatarStyle = {
   marginTop: "0 px",
@@ -17,24 +18,25 @@ const avatarStyle = {
   width: "40px",
 };
 
-const Friends = ({friendsList, onClick}) => {
-  if(friendsList) {
+
+const Friends = (props) => {
+  if(!isEmpty(props.friendList)) {
     return (
       <ul className="list">
-      { friendsList.map((each) => { 
-        return (
-          <li className="clearfix" key={each.id} onClick={() => onClick(each.uid)}>
-            <img src={each.photoURL} style={avatarStyle} alt="avatar" />
-            <div className="about">
-              <div className="name">{each.displayName}</div>
-              <div className="status">
-                <i className="fa fa-circle online"></i> online
+        {props.friendList.map((each) => { 
+          return (
+            <li className="clearfix" key={each.id} onClick={() => props.onClick(each.uid)}>
+              <img src={each.photoURL} style={avatarStyle} alt="avatar" />
+              <div className="about">
+                <div className="name">{each.displayName}</div>
+                <div className="status">
+                  <i className="fa fa-circle online"></i> online
+                </div>
               </div>
-            </div>
-          </li>
-        ) 
-      })}
-    </ul>
+            </li>
+          ) 
+        })}
+      </ul>
     )
   } else {
     return (
@@ -43,4 +45,16 @@ const Friends = ({friendsList, onClick}) => {
   }
 }
 
-export default Friends
+const mapStateToProps = (state ,ownProps) => {
+  return {
+      
+  }
+}
+
+const mapDispatchToProps =(dispatch) => {
+  return {
+      
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Friends)

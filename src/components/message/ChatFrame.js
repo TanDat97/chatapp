@@ -66,12 +66,12 @@ const mapStateToProps = (state ,ownProps) => {
     return {
         converdata: state.firestore.ordered.conversation,
     }
-  }
+}
   
 const mapDispatchToProps =(dispatch) => {
     return {
         getConversation: (authId, chatUserId) => dispatch(getConversation(authId, chatUserId)),
     }
-  }
+}
   
-  export default withRouter(connect(mapStateToProps,mapDispatchToProps)(ChatFrame))
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(ChatFrame))

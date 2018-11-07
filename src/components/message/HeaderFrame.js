@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import '../../style/message.scss';
 import { isEmpty } from 'react-redux-firebase';
+// import { star } from '../../actions/index';
+import '../../style/message.scss';
 
 const avatarStyle = {
     marginTop: "0 px",
@@ -19,7 +20,7 @@ const avatarStyle = {
   
 
 const HeaderFrame = (props) => {
-    var user = {};
+    var userChat = {};
     var conversation = {};
     const authId = props.authId;
     const chatUserId = props.chatUserId;
@@ -27,7 +28,6 @@ const HeaderFrame = (props) => {
     if(!isEmpty(props.converdata)){
         conversation = props.converdata.filter(conver => conver.id === converID.toString()); 
     }  
-    
     if(chatUserId==="" && isEmpty(conversation)) {
         return (
             <div className="chat-header clearfix">
@@ -37,38 +37,47 @@ const HeaderFrame = (props) => {
             </div>
         )
     } else if (chatUserId !== "" && isEmpty(conversation)){
-        user = props.users.filter(user => user.id === chatUserId);
+        userChat = props.users.filter(user => user.id === chatUserId);
         return (
             <div className="chat-header clearfix">
-                <img src={user[0].photoURL} alt="avatar" style={avatarStyle}/>
+                <img src={userChat[0].photoURL} alt="avatar" style={avatarStyle}/>
                 <div className="chat-about">
-                    <div className="chat-with">Chat with {user[0].displayName}</div>
+                    <div className="chat-with">Chat with {userChat[0].displayName}</div>
                     <div className="chat-num-messages">Total Message: 0</div>
                 </div>
-                <i className="fa fa-star"></i>
+                <div onClick = {props.starChange(authId, chatUserId)}>
+                    {props.starId === chatUserId ? <i className="fa fa-star fill"></i> : <i className="fa fa-star"></i>} 
+                </div>
             </div> 
         )
     } else if(chatUserId !== "" && !isEmpty(conversation)) {
-        user = props.users.filter(user => user.id === chatUserId);
+        userChat = props.users.filter(user => user.id === chatUserId);
         return (
             <div className="chat-header clearfix">
-                <img src={user[0].photoURL} alt="avatar" style={avatarStyle}/>
+                <img src={userChat[0].photoURL} alt="avatar" style={avatarStyle}/>
                 <div className="chat-about">
-                    <div className="chat-with">Chat with {user[0].displayName}</div>
+                    <div className="chat-with">Chat with {userChat[0].displayName}</div>
                     <div className="chat-num-messages">Total Message: {conversation[0].history.length}</div>
                 </div>
-                <i className="fa fa-star"></i>
+                <div onClick={props.starChange(authId, chatUserId)}>
+                    {props.starId === chatUserId ? <i className="fa fa-star fill"></i> : <i className="fa fa-star"></i>} 
+                </div>       
             </div> 
         )
     } 
 }
 
-const mapStateToProps = (state ,ownProps) => {
+const mapStateToProps = (state, ownProps) => {
     return {
         users: state.firestore.ordered.users,
         converdata: state.firestore.ordered.conversation,
     }
-  }
+}
+
+const mapDispatchToProps =(dispatch, ownProps) => {
+    return {
+        // star: (authId, chatUserId) => dispatch(star(authId, chatUserId)),
+    }
+} 
   
-  
-export default connect(mapStateToProps,null)(HeaderFrame)
+export default connect(mapStateToProps,mapDispatchToProps)(HeaderFrame)

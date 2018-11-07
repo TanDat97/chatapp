@@ -33,13 +33,12 @@ export const signInGoogle = (profile)  => {
         firestore.collection('users').doc(response.user.uid.toString()).set({
           displayName: response.user.displayName,
           email: response.user.email,
-          isNewUser: false,
           lastLoginAt: new Date(),
           photoURL: response.user.photoURL,
           uid: response.user.uid,
           status: "online",
         })
-        .then((resAddUser) => {
+        .then(() => {
           console.log("add new user account");
           dispatch({ type: actionType.SIGN_IN_GOOGLE_SUCCESS});
         })
@@ -61,7 +60,7 @@ export const signOut = () => {
   return (dispatch, getState, ) => {
     const firebase = getFirebase();
     firebase.auth().signOut()
-    .then((response)=>{
+    .then(()=>{
       dispatch({
         type: actionType.SIGN_OUT
       })
@@ -111,7 +110,7 @@ export const createConversation = (authId, chatUserId, text, displayName) => {
           {chatUserId},
         ],
     })
-    .then((response) => {
+    .then(() => {
       dispatch({
         type: actionType.CREATE_CONVERSATION,
       });
@@ -152,5 +151,57 @@ export const sendMessage = (authId, chatUserId, text, displayName, history) => {
         err: err,
       })
     })
+  }
+}
+
+export const star = (authId, chatUserId) => {
+  return (dispatch, getState ) => {
+    const firestore = firebase.firestore();
+    firestore.collection('user').doc(authId).update({
+      star: chatUserId,       
+    })
+    .then(() => {
+      dispatch({
+        type: actionType.STAR,
+        star: 'success',
+      });
+    })
+    .catch((err)=>{
+      dispatch({
+        type: actionType.ERROR,
+        err: err,
+      })
+    })
+  }
+}
+
+
+function searchUserByName(name, friendList) {
+  const list = [];
+  for (var i = 0; i<friendList.length; i++) {
+    if(friendList[i].displayName.toLowerCase().search(name.toLowerCase()) >= 0) { 
+      list.push(friendList[i]);
+    }
+  }
+  // console.log(list);
+  return list;
+}
+
+
+export const searchByName = (name, friendList) =>{
+  return (dispatch, getState) => {
+    if (name === ""){
+      dispatch({
+        type: actionType.SEARCH_BY_NAME,
+        name: null,
+        searchResult: friendList,
+      })
+    } else {
+      dispatch({
+        type: actionType.SEARCH_BY_NAME,
+        name: name,
+        searchResult: searchUserByName(name, friendList),
+      })
+    }
   }
 }
