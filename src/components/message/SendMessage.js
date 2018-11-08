@@ -1,97 +1,95 @@
 import React from 'react';
-import { isEmpty } from 'react-redux-firebase';
+import { isEmpty, getFirebase } from 'react-redux-firebase';
 import { connect } from 'react-redux';
-import {createConversation, sendMessage, chooseFile } from '../../actions/index';
+import {createConversation, sendMessage, chooseFile, clearFile } from '../../actions/index';
 import '../../style/message.scss';
 
-// const inputImageStyle = {
-//     backgroundColor: "Transparent",
-//     border: "none",
-//     cursor: "pointer",
-//     overflow: "hidden",
-//     outline:"none"
-// }
-
-// function handledUpLoad (event) {
-//     const file = event.target.files[0];
-//         console.log(file);
-        
-//         let formData = new FormData();
-//         formData.append('file', file);
-
-//         // this.props.uploadImage(file)
-        
-//         var firebase = getFirebase()
-//         var storageRef = firebase.storage().ref('conversations/4001/upload/images/'+file.name);
-//         var task = storageRef.put(file);
-        
-//         task.on('state_changed', function(snapshot){
-//             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-//             console.log('Upload is ' + progress + '% done');
-//             switch (snapshot.state) {
-//               case firebase.storage.TaskState.PAUSED: // or 'paused'
-//                 console.log('Upload is paused');
-//                 break;
-//               case firebase.storage.TaskState.RUNNING: // or 'running'
-//                 console.log('Upload is running');
-//                 break;
-//             case firebase.storage.TaskState.SUCCESS: // or 'running'
-//                 console.log('Upload is SUCCESS');
-//                 break;
-//             }
-//           }, err => {
-//                 console.log(err);
-                
-//           }, () => {
-//             console.log('Upload is SUCCESS');
-//           });
-// }
+function handledUpLoad (file) {
+    return new Promise((resolve, reject) => { 
+        let formData = new FormData();
+        formData.append('file', file);
+        var firebase = getFirebase();
+        var storageRef = firebase.storage().ref('conversations/images/'+file.name);
+        var task = storageRef.put(file);
+        task.on('state_changed', function(snapshot){
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+                case firebase.storage.TaskState.PAUSED: // or 'paused'
+                    console.log('Upload is paused');
+                    break;
+                case firebase.storage.TaskState.RUNNING: // or 'running'
+                    console.log('Upload is running');
+                    break;
+                case firebase.storage.TaskState.SUCCESS: // or 'running'
+                    console.log('Upload is SUCCESS');
+                    break;
+                default:
+            }
+        }, err => {
+            reject(err);
+        }, () => {
+            console.log('Upload is SUCCESS');
+            task.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                resolve(downloadURL)
+            });
+        });
+    });
+}
 
 const SendMessage = (props) => {
-    console.log(props);
     var conversation = {};
     const displayName = props.displayName;
     const authId = props.authId;
     const chatUserId = props.chatUserId;
     const converID = props.hashConversationID(authId,chatUserId);
-    const file = props.file;
-    let input;
+    const fileReducer = props.fileReducer;
+    let input1, input2;
+    
     if(!isEmpty(props.converdata)){
         conversation = props.converdata.filter(conver => conver.id === converID.toString()); 
         return (
-            <form onSubmit={e => {
+            <form onSubmit={e => {   
                 e.preventDefault()
-                if (!input.value.trim()) {
+                if (!input1.value.trim() && isEmpty(fileReducer)) {
                     return
                 }
                 if (chatUserId !=="" && isEmpty(conversation)){
-                    props.createConversation(authId, chatUserId, input.value, displayName);
-                } else if (chatUserId !=="" && !isEmpty(conversation) && file === null){ 
-                    props.sendMessage(authId, chatUserId, input.value, displayName, conversation[0].history);
-                } else if (chatUserId !=="" && !isEmpty(conversation) && file !== null) {
-
+                    props.createConversation(authId, chatUserId, input1.value, displayName);
+                } else if (chatUserId !=="" && !isEmpty(conversation) && isEmpty(fileReducer)){ 
+                    props.sendMessage(authId, chatUserId, input1.value, displayName, conversation[0].history);
+                } else if (chatUserId !=="" && !isEmpty(conversation) && !isEmpty(fileReducer)) {
+                    handledUpLoad(fileReducer.file)
+                    .then((url) => {
+                        props.clearFile();
+                        props.sendMessage(authId, chatUserId, url, displayName, conversation[0].history);       
+                    })
+                    .catch((err)=>console.log(err));
                 }
-                input.value = ''
+                input1.value = '';
+                input2.value = '';
             }}>
                 <div className="chat-message clearfix align-left">
-                    <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3" ref={node => input = node}></textarea>         
+                    <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3" ref={node => input1 = node}></textarea>         
                     <i className="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
                     <i className="fa fa-file-image-o">
-                        <input type="file" id="upImage" name="upImage" 
+                        <input type="file" id="upImage" name="upImage" ref={node => input2 = node}
                             onChange={event => {
-                                console.log(event.target.files);
                                 props.chooseFile(event.target.files[0]);
                             }}
                         />
-                    </i>
+                    </i> 
                     <button>Send</button>
+                    {/* <div>
+                        {(isUpload || isEmpty(props.fileReducer)) ? <div>Loded</div> : <div>Loavcvcvlk</div>}
+                    </div> */}
                 </div> 
             </form>
         )
     } else {
         return(
             <div className="chat-message clearfix align-left">
-                <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3" ref={node => input = node}></textarea>         
+                <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3" ref={node => input1 = node}></textarea>
                 <i className="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
                 <i className="fa fa-file-image-o"></i>
                 <button>Send</button>
@@ -104,6 +102,7 @@ const mapStateToProps = (state ,ownProps) => {
     return {
         converdata: state.firestore.ordered.conversation,
         file: state.fileReducer.file,
+        fileReducer: state.fileReducer,
     }
 }
   
@@ -112,7 +111,7 @@ const mapDispatchToProps =(dispatch) => {
         sendMessage: (authId, chatUserId, text, displayName, history) => dispatch(sendMessage(authId, chatUserId, text, displayName, history)),
         createConversation: (authId, chatUserId, text, displayName) => dispatch(createConversation(authId, chatUserId, text, displayName)),
         chooseFile: (file) => dispatch(chooseFile(file)),
-        
+        clearFile: () => dispatch(clearFile()),
     }
   }
   

@@ -8,4 +8,5 @@ export const SEND_MESSAGE = "SEND_MESSAGE";
 export const STAR = "STAR";
 export const SEARCH_BY_NAME = 'SEARCH_BY_NAME';
 export const CHOOSE_FILE = 'CHOOSE_FILE';
+export const CLEAR_FILE = 'CLEAR_FILE';
 export const SEND_FILE = 'SEND_FILE';

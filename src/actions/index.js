@@ -217,6 +217,14 @@ export const chooseFile = (file) => {
   }
 }
 
+export const clearFile = () => {
+  return (dispatch, getState) => {
+    dispatch ({
+      type: actionType.CLEAR_FILE,
+    })
+  }
+}
+
 export const sendFile = (file, authId, chatUserId, displayName, history) => {
 
 }

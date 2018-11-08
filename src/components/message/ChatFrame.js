@@ -2,15 +2,17 @@ import React from 'react';
 import ReactLoading from "react-loading";
 import { isEmpty } from 'react-redux-firebase';
 import { connect } from 'react-redux';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
+import isUrl from 'is-url';
+
 import { getConversation } from '../../actions/index';
 import ImageMessage from './ImageMessage';
 import '../../style/message.scss';
 
-function checkURL(url) {
-    return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
-}
+// function checkURL(url) {
+//     return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+// }
 
 const ChatFrame = (props) => {
     var conversation = {};
@@ -43,7 +45,8 @@ const ChatFrame = (props) => {
                                     <span className="message-data-name" >{each.displayName}</span> <i className="fa fa-circle me"></i>
                                 </div>
                                 <div className="message other-message float-right">
-                                    {checkURL(each.text) ? <ImageMessage link={each.text}/> : each.text}
+                                    {isUrl(each.text) ? <ImageMessage link={each.text}/> : each.text}
+                                    
                                 </div>
                             </li>
                         )
@@ -55,7 +58,7 @@ const ChatFrame = (props) => {
                                     <span className="message-data-time">{date}</span>
                                 </div>
                                 <div className="message my-message">
-                                    {checkURL(each.text) ? <ImageMessage link={each.text}/> : each.text}
+                                    {isUrl(each.text) ? <ImageMessage link={each.text}/> : each.text}
                                 </div>
                             </li> 
                         )

@@ -1,7 +1,6 @@
 import * as actionType from '../constants/ActionType'
 
 const initState = {
-    file: null,
 }
 
 const fileReducer = (state = initState, action) => {
@@ -11,9 +10,11 @@ const fileReducer = (state = initState, action) => {
             return {
                 file: action.file,
             }
+        case actionType.CLEAR_FILE:
+            return {
+            }
         case actionType.ERROR:
             return {
-                file: null,
                 err: action.err,
             }
         default:

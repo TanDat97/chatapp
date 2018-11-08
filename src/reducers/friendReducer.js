@@ -4,7 +4,7 @@ const initState = {
     name: null,
 }
 
-const friendReducer = (state = initState, action) => {
+export const friendReducer = (state = initState, action) => {
     switch (action.type) {
         case actionType.SEARCH_BY_NAME:
         console.log('SEARCH_BY_NAME');
@@ -12,19 +12,25 @@ const friendReducer = (state = initState, action) => {
                 name: action.name,
                 searchResult: action.searchResult,
             }
-        case actionType.STAR:
-            console.log('STAR');
-            return {
-                name: null,
-                star: action.star,
-            }   
-        // case actionType.ERROR:
-        //     return {
-        //         name: null,
-        //         err: action.err,
-        //     }
         default:
             return state;
     }
 }
-export default friendReducer;
+export const starReducer = (state = initState, action) => {
+    switch (action.type) {
+        case actionType.STAR:
+            console.log('STAR');
+            return {
+                star: action.star,
+            }   
+        case actionType.ERROR:
+            return {
+                star: null,
+                err: action.err,
+            }
+        default:
+            return state;
+    }
+}
+
+

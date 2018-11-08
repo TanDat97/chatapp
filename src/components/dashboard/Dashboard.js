@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect, isEmpty } from 'react-redux-firebase';
 
-import { getConversation, star, searchByName } from '../../actions/index';
+import { star, searchByName } from '../../actions/index';
 import Friends from'../message/Friends';
 import HeaderFrame from '../message/HeaderFrame';
 import ChatFrame from '../message/ChatFrame';
@@ -86,7 +86,6 @@ class Dashboard extends Component {
                   chatUserId = {this.state.chatUserId}
                   starId = {starId}
                   hashConversationID = {this.hashConversationID}
-                  
                 />
                 <div id="chat-history" className="chat-history">
                   <ChatFrame 
@@ -127,7 +126,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps =(dispatch) => {
   return {
-    getConversation: (authId, chatUserId) => dispatch(getConversation(authId, chatUserId)),
     star: (authId, chatUserId) => dispatch(star(authId, chatUserId)),
     searchByName: (name, friendList) => dispatch(searchByName(name, friendList)),
   }

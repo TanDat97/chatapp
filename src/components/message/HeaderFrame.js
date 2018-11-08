@@ -18,7 +18,7 @@ const avatarStyle = {
     width: "40px",
   };
 
-var buttonStyle = {
+var buttonStarStyle = {
     backgroundColor: "Transparent",
     border: "none",
     cursor: "pointer",
@@ -53,7 +53,7 @@ const HeaderFrame = (props) => {
                     <div className="chat-with">Chat with {userChat[0].displayName}</div>
                     <div className="chat-num-messages">Total Message: 0</div>
                 </div>
-                <button onClick = {()=>props.star(authId, chatUserId)} style={buttonStyle}>
+                <button onClick = {()=>props.star(authId, chatUserId)} style={buttonStarStyle}>
                     {props.starId === chatUserId ? <i className="fa fa-star fill"></i> : <i className="fa fa-star"></i>} 
                 </button>
             </div> 
@@ -67,7 +67,7 @@ const HeaderFrame = (props) => {
                     <div className="chat-with">Chat with {userChat[0].displayName}</div>
                     <div className="chat-num-messages">Total Message: {conversation[0].history.length}</div>
                 </div>
-                <button onClick={()=>props.star(authId, chatUserId)} style={buttonStyle}>
+                <button onClick={()=>props.star(authId, chatUserId)} style={buttonStarStyle}>
                     {props.starId === chatUserId ? <i className="fa fa-star fill"></i> : <i className="fa fa-star"></i>} 
                 </button>       
             </div> 
