@@ -20,6 +20,8 @@ function hashConversationID(a,b) {
 
 export const signInGoogle = (profile)  => { 
   return (dispatch, getState ) => {
+    const date = new Date(); // some mock date
+    const createMilisecond = date.getTime();
     const firestore = getFirestore();
     const firebase = getFirebase();
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -33,7 +35,7 @@ export const signInGoogle = (profile)  => {
         firestore.collection('users').doc(response.user.uid.toString()).set({
           displayName: response.user.displayName,
           email: response.user.email,
-          lastLoginAt: new Date(),
+          lastLoginAt: createMilisecond,
           photoURL: response.user.photoURL,
           uid: response.user.uid,
           status: "online",
@@ -106,8 +108,8 @@ export const createConversation = (authId, chatUserId, text, displayName) => {
           ],
         lastMessage: createMilisecond,
         users: [
-          {authId},
-          {chatUserId},
+          {id: authId},
+          {id: chatUserId},
         ],
     })
     .then(() => {
@@ -157,7 +159,7 @@ export const sendMessage = (authId, chatUserId, text, displayName, history) => {
 export const star = (authId, chatUserId) => {
   return (dispatch, getState ) => {
     const firestore = firebase.firestore();
-    firestore.collection('user').doc(authId).update({
+    firestore.collection('users').doc(authId).update({
       star: chatUserId,       
     })
     .then(() => {
@@ -204,4 +206,17 @@ export const searchByName = (name, friendList) =>{
       })
     }
   }
+}
+
+export const chooseFile = (file) => {
+  return (dispatch, getState) => {
+    dispatch ({
+      type: actionType.CHOOSE_FILE,
+      file: file,
+    })
+  }
+}
+
+export const sendFile = (file, authId, chatUserId, displayName, history) => {
+
 }

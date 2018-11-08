@@ -5,7 +5,12 @@ import { connect } from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import moment from 'moment';
 import { getConversation } from '../../actions/index';
+import ImageMessage from './ImageMessage';
 import '../../style/message.scss';
+
+function checkURL(url) {
+    return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+}
 
 const ChatFrame = (props) => {
     var conversation = {};
@@ -28,22 +33,21 @@ const ChatFrame = (props) => {
         return (
             <ul>
                 {conversation[0].history.map ((each, index) => {
-                    const sec = parseInt(each.sendAt)
-                    const date = moment(new Date(sec)).format('l') + " - "  +moment(new Date(sec)).format('LT')
-                    if (each.idSend === authId)
+                    const sec = parseInt(each.sendAt);
+                    const date = moment(new Date(sec)).format('l') + " - "  +moment(new Date(sec)).format('LT');
+                    if (each.idSend === authId) {
                         return (
                             <li className="clearfix" key = {index}>
                                 <div className="message-data align-right">
                                     <span className="message-data-time" >{date}</span> &nbsp; &nbsp;
                                     <span className="message-data-name" >{each.displayName}</span> <i className="fa fa-circle me"></i>
-                                    
                                 </div>
                                 <div className="message other-message float-right">
-                                    {each.text}
+                                    {checkURL(each.text) ? <ImageMessage link={each.text}/> : each.text}
                                 </div>
                             </li>
                         )
-                    else 
+                    } else {
                         return (
                             <li className="clearfix" key = {index}>
                                 <div className="message-data align-left">
@@ -51,12 +55,12 @@ const ChatFrame = (props) => {
                                     <span className="message-data-time">{date}</span>
                                 </div>
                                 <div className="message my-message">
-                                    {each.text}
+                                    {checkURL(each.text) ? <ImageMessage link={each.text}/> : each.text}
                                 </div>
                             </li> 
                         )
                     }
-                )}
+                })}
             </ul>
         )
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'react-redux-firebase';
-// import { star } from '../../actions/index';
+import { star } from '../../actions/index';
 import '../../style/message.scss';
 
 const avatarStyle = {
@@ -17,6 +17,14 @@ const avatarStyle = {
     height: "40px",
     width: "40px",
   };
+
+var buttonStyle = {
+    backgroundColor: "Transparent",
+    border: "none",
+    cursor: "pointer",
+    overflow: "hidden",
+    outline:"none"
+}
   
 
 const HeaderFrame = (props) => {
@@ -45,9 +53,9 @@ const HeaderFrame = (props) => {
                     <div className="chat-with">Chat with {userChat[0].displayName}</div>
                     <div className="chat-num-messages">Total Message: 0</div>
                 </div>
-                <div onClick = {props.starChange(authId, chatUserId)}>
+                <button onClick = {()=>props.star(authId, chatUserId)} style={buttonStyle}>
                     {props.starId === chatUserId ? <i className="fa fa-star fill"></i> : <i className="fa fa-star"></i>} 
-                </div>
+                </button>
             </div> 
         )
     } else if(chatUserId !== "" && !isEmpty(conversation)) {
@@ -59,9 +67,9 @@ const HeaderFrame = (props) => {
                     <div className="chat-with">Chat with {userChat[0].displayName}</div>
                     <div className="chat-num-messages">Total Message: {conversation[0].history.length}</div>
                 </div>
-                <div onClick={props.starChange(authId, chatUserId)}>
+                <button onClick={()=>props.star(authId, chatUserId)} style={buttonStyle}>
                     {props.starId === chatUserId ? <i className="fa fa-star fill"></i> : <i className="fa fa-star"></i>} 
-                </div>       
+                </button>       
             </div> 
         )
     } 
@@ -76,7 +84,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps =(dispatch, ownProps) => {
     return {
-        // star: (authId, chatUserId) => dispatch(star(authId, chatUserId)),
+        star: (authId, chatUserId) => dispatch(star(authId, chatUserId)),
     }
 } 
   

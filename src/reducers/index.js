@@ -4,6 +4,7 @@ import { firestoreReducer } from 'redux-firestore';
 import signInGoogle from './authReducer';
 import chatReducer from './chatReducer';
 import friendReducer from './friendReducer';
+import fileReducer from './fileReducer';
 
 const myReducer = combineReducers({
     firebase: firebaseReducer,
@@ -11,6 +12,7 @@ const myReducer = combineReducers({
     auth: signInGoogle,
     chatReducer: chatReducer,
     friendReducer: friendReducer,
+    fileReducer: fileReducer,
 })
 
 export default myReducer;

@@ -86,7 +86,7 @@ class Dashboard extends Component {
                   chatUserId = {this.state.chatUserId}
                   starId = {starId}
                   hashConversationID = {this.hashConversationID}
-                  starChange = {this.props.star}
+                  
                 />
                 <div id="chat-history" className="chat-history">
                   <ChatFrame 
@@ -114,7 +114,7 @@ class Dashboard extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   console.log(state);
   return {
     users: state.firestore.ordered.users,
@@ -136,6 +136,6 @@ const mapDispatchToProps =(dispatch) => {
 export default compose(
   connect(mapStateToProps,mapDispatchToProps),
   firestoreConnect((props) => [
-    {collection: 'conversation'},
+
 ])
 )(Dashboard)
