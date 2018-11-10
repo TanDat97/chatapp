@@ -156,11 +156,17 @@ export const sendMessage = (authId, chatUserId, text, displayName, history) => {
   }
 }
 
-export const star = (authId, chatUserId) => {
+export const star = (authId, chatUserId, listFriend, isStar) => {
+  console.log(listFriend);
   return (dispatch, getState ) => {
     const firestore = firebase.firestore();
+    listFriend.forEach(friend =>{
+      if (friend.uid===chatUserId){
+        friend.star = !friend.star;
+      }
+    });
     firestore.collection('users').doc(authId).update({
-      star: chatUserId,       
+      listFriend: listFriend,       
     })
     .then(() => {
       dispatch({
@@ -185,7 +191,6 @@ function searchUserByName(name, friendList) {
       list.push(friendList[i]);
     }
   }
-  // console.log(list);
   return list;
 }
 
@@ -225,6 +230,10 @@ export const clearFile = () => {
   }
 }
 
-export const sendFile = (file, authId, chatUserId, displayName, history) => {
-
+export const changeStateUpload = () => {
+  return (dispatch, getState) => {
+    dispatch({
+      type: actionType.CHANGE_STATE_UPLOAD,
+    })
+  }
 }

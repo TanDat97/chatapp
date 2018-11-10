@@ -197,6 +197,10 @@ $gray: #92959E;
                 color: darken($blue, 7%);
             }
         }
+
+        .upload {
+            margin-left: 95%;
+        }
     }
 }
 
@@ -246,4 +250,8 @@ $gray: #92959E;
 
 .backgrey {
     background: "#444753",
+}
+
+.textWhite {
+    color: white;
 }

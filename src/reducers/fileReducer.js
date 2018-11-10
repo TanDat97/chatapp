@@ -3,7 +3,7 @@ import * as actionType from '../constants/ActionType'
 const initState = {
 }
 
-const fileReducer = (state = initState, action) => {
+export const fileReducer = (state = initState, action) => {
     switch (action.type) {
         case actionType.CHOOSE_FILE:
         console.log('CHOOSE_FILE');
@@ -21,4 +21,20 @@ const fileReducer = (state = initState, action) => {
             return state;
     }
 }
-export default fileReducer;
+
+export const upLoadReducer = (state = { isUpload: true }, action) => {
+    switch (action.type) {
+        case actionType.CHANGE_STATE_UPLOAD:
+        console.log('CHANGE_STATE_UPLOAD');
+            return {
+                isUpload: state ? !state.isUpload : true,
+            }
+        case actionType.ERROR:
+            return {
+                isUpload: true,
+                err: action.err,
+            }
+        default:
+            return state;
+    }
+}

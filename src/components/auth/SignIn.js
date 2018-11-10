@@ -49,9 +49,15 @@ class SignIn extends Component {
   }
 }
 
+const mapStateToProps = (state, ownProps) => {
+  return {
+      users: state.firestore.ordered.users,
+  }
+}
+
 const mapDispatchToProps =(dispatch) => {
   return {
     signInGoogle: () => dispatch (signInGoogle())
  }
 }
-export default connect(null, mapDispatchToProps,)(SignIn)
+export default connect(mapStateToProps, mapDispatchToProps,)(SignIn)

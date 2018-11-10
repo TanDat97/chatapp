@@ -14,13 +14,16 @@ const imageStyle = {
     height: "auto",
     width: "auto",
     maxWidth: "90%",
-  };
+};
   
+const textWhite = {
+    color: "white",
+}
 
 const ImageMessage = (props) => { 
     return (
         <div>
-            <a target="_blank" rel="noopener noreferrer" href={props.link}>{props.link}</a>
+            <a target="_blank" rel="noopener noreferrer" style={textWhite} href={props.link}>{props.link}></a>
             <img src={props.link} style={imageStyle} alt="imageMessage"/>
         </div>
     )

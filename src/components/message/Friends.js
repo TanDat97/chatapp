@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactLoading from "react-loading";
 import { connect } from 'react-redux';
-import '../../style/message.scss';
 import { isEmpty } from 'react-redux-firebase';
+import '../../style/message.scss';
 
 const avatarStyle = {
   marginTop: "0 px",

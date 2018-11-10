@@ -1,7 +1,8 @@
 import React from 'react';
 import { isEmpty, getFirebase } from 'react-redux-firebase';
 import { connect } from 'react-redux';
-import {createConversation, sendMessage, chooseFile, clearFile } from '../../actions/index';
+import ReactLoading from "react-loading";
+import {createConversation, sendMessage, chooseFile, clearFile, changeStateUpload } from '../../actions/index';
 import '../../style/message.scss';
 
 function handledUpLoad (file) {
@@ -44,12 +45,14 @@ const SendMessage = (props) => {
     const chatUserId = props.chatUserId;
     const converID = props.hashConversationID(authId,chatUserId);
     const fileReducer = props.fileReducer;
+    const isUpload = props.upLoadReducer.isUpload;
     let input1, input2;
     
     if(!isEmpty(props.converdata)){
         conversation = props.converdata.filter(conver => conver.id === converID.toString()); 
         return (
-            <form onSubmit={e => {   
+            <form onSubmit={e => {
+                props.changeStateUpload();
                 e.preventDefault()
                 if (!input1.value.trim() && isEmpty(fileReducer)) {
                     return
@@ -62,7 +65,8 @@ const SendMessage = (props) => {
                     handledUpLoad(fileReducer.file)
                     .then((url) => {
                         props.clearFile();
-                        props.sendMessage(authId, chatUserId, url, displayName, conversation[0].history);       
+                        props.sendMessage(authId, chatUserId, url, displayName, conversation[0].history);
+                        props.changeStateUpload();
                     })
                     .catch((err)=>console.log(err));
                 }
@@ -78,11 +82,11 @@ const SendMessage = (props) => {
                                 props.chooseFile(event.target.files[0]);
                             }}
                         />
-                    </i> 
+                    </i>
                     <button>Send</button>
-                    {/* <div>
-                        {(isUpload || isEmpty(props.fileReducer)) ? <div>Loded</div> : <div>Loavcvcvlk</div>}
-                    </div> */}
+                    <div className="upload">
+                        {(isUpload || isEmpty(props.fileReducer))?<div></div>:<ReactLoading type="spin" color="black" height={'25'} width={'25px'}/>}
+                    </div>
                 </div> 
             </form>
         )
@@ -101,8 +105,8 @@ const SendMessage = (props) => {
 const mapStateToProps = (state ,ownProps) => {
     return {
         converdata: state.firestore.ordered.conversation,
-        file: state.fileReducer.file,
         fileReducer: state.fileReducer,
+        upLoadReducer: state.upLoadReducer,
     }
 }
   
@@ -112,6 +116,7 @@ const mapDispatchToProps =(dispatch) => {
         createConversation: (authId, chatUserId, text, displayName) => dispatch(createConversation(authId, chatUserId, text, displayName)),
         chooseFile: (file) => dispatch(chooseFile(file)),
         clearFile: () => dispatch(clearFile()),
+        changeStateUpload: () => dispatch(changeStateUpload()),
     }
   }
   

@@ -42,24 +42,30 @@ class Dashboard extends Component {
     this.setState({
       chatUserId: userUID
     })
-    // this.props.getConversation(this.props.auth.uid,userUID);
   }
 
-  findStarId(authId, users) {
-    var user = users.filter(user => user.id === authId);
-    return user[0].star;
+sortUsersByLastMessage(authUser, users) {
+  users = users.filter(user => user.id !== this.props.auth.uid);
+  if(!isEmpty(authUser[0].listFriend)) {
+    users.forEach((user) => {
+      user.info = authUser[0].listFriend.filter(friend => friend.uid===user.uid);
+    });
+    users.sort((a,b)=> b.info[0].star - a.info[0].star);
+  } else {
+    
   }
+  return users;
+}
 
   render() {
-    var authUser = this.props.auth;
+    var authUser = {};
     var users = this.props.users;
-    var starId = '1';
     var friendReducer = this.props.friendReducer;
-    if(users) {
-      users = users.filter(user => user.id !== authUser.uid);
-      starId = this.findStarId(authUser.uid, this.props.users);
+    if(!isEmpty(users) && !isEmpty(this.props.auth.uid)) {
+      authUser = users.filter(user => user.id === this.props.auth.uid);
+      users = this.sortUsersByLastMessage(authUser, users); 
     }
-    if (authUser.isEmpty === false) {   
+    if (!isEmpty(authUser)) {  
       return (
         <div className="dashboard container">
           <div className="row" style={backgrey}>   
@@ -76,29 +82,28 @@ class Dashboard extends Component {
               <Friends 
                 friendList = {friendReducer.name === null||(isEmpty(friendReducer))?users:friendReducer.searchResult}
                 onClick = {this.clickUser.bind(this)}
-                searchByName = {this.props.searchByName}
               />  
             </div>
             <div className="col-8 backmessage">
               <div className="chat">
                 <HeaderFrame 
-                  authId = {authUser.uid}
+                  authId = {authUser[0].uid}
                   chatUserId = {this.state.chatUserId}
-                  starId = {starId}
+                  listFriend = {authUser[0].listFriend}
                   hashConversationID = {this.hashConversationID}
                 />
                 <div id="chat-history" className="chat-history">
                   <ChatFrame 
-                    authId = {authUser.uid}
+                    authId = {authUser[0].uid}
                     chatUserId = {this.state.chatUserId}
                     hashConversationID = {this.hashConversationID}
                   />
                 </div>    
                 <SendMessage
-                  authId = {authUser.uid}
+                  displayName = {authUser[0].displayName}
+                  authId = {authUser[0].uid}
                   chatUserId = {this.state.chatUserId}
                   hashConversationID = {this.hashConversationID}
-                  displayName = {authUser.displayName}
                 />
               </div>
             </div>
@@ -133,7 +138,5 @@ const mapDispatchToProps =(dispatch) => {
 
 export default compose(
   connect(mapStateToProps,mapDispatchToProps),
-  firestoreConnect((props) => [
-
-])
+  firestoreConnect((props) => [])
 )(Dashboard)
