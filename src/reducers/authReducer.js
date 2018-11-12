@@ -13,14 +13,10 @@ const signInGoogle = (state = initState, action) => {
             };     
         case actionType.SIGN_IN_GOOGLE_FAIL:
             return {
-                ...state,
-                auth: 'login failed',
             };    
         case actionType.SIGN_OUT:
             console.log('logout success');
             return {
-                ...state,
-                auth: "log out success",
             }
         default:
             return state;

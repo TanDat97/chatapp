@@ -39,6 +39,7 @@ function handledUpLoad (file) {
 }
 
 const SendMessage = (props) => {
+    // console.log(props);
     var conversation = {};
     const displayName = props.displayName;
     const authId = props.authId;
@@ -48,7 +49,7 @@ const SendMessage = (props) => {
     const isUpload = props.upLoadReducer.isUpload;
     let input1, input2;
     
-    if(!isEmpty(props.converdata)){
+    if(chatUserId !=="" && !isEmpty(props.converdata)){
         conversation = props.converdata.filter(conver => conver.id === converID.toString()); 
         return (
             <form onSubmit={e => {
@@ -57,11 +58,11 @@ const SendMessage = (props) => {
                 if (!input1.value.trim() && isEmpty(fileReducer)) {
                     return
                 }
-                if (chatUserId !=="" && isEmpty(conversation)){
+                if (isEmpty(conversation)){
                     props.createConversation(authId, chatUserId, input1.value, displayName);
-                } else if (chatUserId !=="" && !isEmpty(conversation) && isEmpty(fileReducer)){ 
+                } else if (!isEmpty(conversation) && isEmpty(fileReducer)){ 
                     props.sendMessage(authId, chatUserId, input1.value, displayName, conversation[0].history);
-                } else if (chatUserId !=="" && !isEmpty(conversation) && !isEmpty(fileReducer)) {
+                } else if (!isEmpty(conversation) && !isEmpty(fileReducer)) {
                     handledUpLoad(fileReducer.file)
                     .then((url) => {
                         props.clearFile();

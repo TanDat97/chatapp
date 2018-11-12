@@ -11,3 +11,4 @@ export const CHOOSE_FILE = 'CHOOSE_FILE';
 export const CLEAR_FILE = 'CLEAR_FILE';
 export const SEND_FILE = 'SEND_FILE';
 export const CHANGE_STATE_UPLOAD = 'CHANGE_STATE_UPLOAD';
+export const MAKE_LIST_FRIEND = 'MAKE_LIST_FRIEND';

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect, isEmpty } from 'react-redux-firebase';
 
-import { star, searchByName } from '../../actions/index';
+import { star, searchByName, makeListFriend } from '../../actions/index';
 import Friends from'../message/Friends';
 import HeaderFrame from '../message/HeaderFrame';
 import ChatFrame from '../message/ChatFrame';
@@ -19,8 +19,14 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chatUserId: ""
+      chatUserId: "",
     };
+  }
+
+  componentDidUpdate = () => {
+    if(isEmpty(this.props.auth)) {
+      this.props.history.push('./welcome');
+    }
   }
 
   hashConversationID (a,b) { 
@@ -44,18 +50,39 @@ class Dashboard extends Component {
     })
   }
 
-sortUsersByLastMessage(authUser, users) {
-  users = users.filter(user => user.id !== this.props.auth.uid);
-  if(!isEmpty(authUser[0].listFriend)) {
-    users.forEach((user) => {
-      user.info = authUser[0].listFriend.filter(friend => friend.uid===user.uid);
-    });
-    users.sort((a,b)=> b.info[0].star - a.info[0].star);
-  } else {
-    
+  sortUsersByLastMessage(authUser, users) {
+    var listFriend = [];
+    users = users.filter(user => user.id !== this.props.auth.uid);
+    if(!isEmpty(authUser[0].listFriend)) {   // ton tai danh sach ban be
+      if(authUser[0].listFriend.length === users.length) {  // danh sach full
+        users.forEach((user) => {
+          user.info = authUser[0].listFriend.filter(friend => friend.uid===user.uid);
+        });
+        users.sort((a,b)=> b.info[0].star - a.info[0].star);
+      } else { // danh sach bi thieu
+        users.forEach((user) => {
+          const info = {
+            uid: user.uid,
+            lastMessage: 0,
+            star: false,
+          };
+          listFriend.push(info);
+        });
+        this.props.makeListFriend(this.props.auth.uid, listFriend);
+      }
+    } else { // chua co danh sach
+      users.forEach((user) => {
+        const info = {
+          uid: user.uid,
+          lastMessage: 0,
+          star: false,
+        };
+        listFriend.push(info);
+      });
+      this.props.makeListFriend(this.props.auth.uid, listFriend);
+    }
+    return users;
   }
-  return users;
-}
 
   render() {
     var authUser = {};
@@ -133,6 +160,7 @@ const mapDispatchToProps =(dispatch) => {
   return {
     star: (authId, chatUserId) => dispatch(star(authId, chatUserId)),
     searchByName: (name, friendList) => dispatch(searchByName(name, friendList)),
+    makeListFriend: (authId, listFriend) => dispatch(makeListFriend(authId, listFriend)),
   }
 }
 

@@ -35,6 +35,7 @@ export const signInGoogle = (profile)  => {
         firestore.collection('users').doc(response.user.uid.toString()).set({
           displayName: response.user.displayName,
           email: response.user.email,
+          listFriend: {},
           lastLoginAt: createMilisecond,
           photoURL: response.user.photoURL,
           uid: response.user.uid,
@@ -157,7 +158,6 @@ export const sendMessage = (authId, chatUserId, text, displayName, history) => {
 }
 
 export const star = (authId, chatUserId, listFriend, isStar) => {
-  console.log(listFriend);
   return (dispatch, getState ) => {
     const firestore = firebase.firestore();
     listFriend.forEach(friend =>{
@@ -234,6 +234,19 @@ export const changeStateUpload = () => {
   return (dispatch, getState) => {
     dispatch({
       type: actionType.CHANGE_STATE_UPLOAD,
+    })
+  }
+}
+
+export const makeListFriend = (authId, listFriend) => {
+  return (dispatch, getState) => {
+    const firestore = firebase.firestore();
+    firestore.collection('users').doc(authId).update({
+      listFriend: listFriend,       
+    })
+    dispatch({
+      type: actionType.MAKE_LIST_FRIEND,
+      makeList: 'success',
     })
   }
 }

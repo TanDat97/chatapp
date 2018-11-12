@@ -16,7 +16,7 @@ export const friendReducer = (state = initState, action) => {
             return state;
     }
 }
-export const starReducer = (state = initState, action) => {
+export const starReducer = (state = {}, action) => {
     switch (action.type) {
         case actionType.STAR:
             console.log('STAR');
