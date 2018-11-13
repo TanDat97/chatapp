@@ -29,7 +29,8 @@ class Dashboard extends Component {
     }
   }
 
-  hashConversationID (a,b) { 
+  hashConversationID (a, b) { 
+    a = a ? a : '1'; b = b ? b : '1';
     var hashA = 0
     var hashB = 0
     for (var i = 0; i<a.length; i++) {
@@ -53,24 +54,33 @@ class Dashboard extends Component {
   sortUsersByLastMessage(authUser, users) {
     var listFriend = [];
     users = users.filter(user => user.id !== this.props.auth.uid);
-    if(!isEmpty(authUser[0].listFriend)) {   // ton tai danh sach ban be
-      if(authUser[0].listFriend.length === users.length) {  // danh sach full
-        users.forEach((user) => {
-          user.info = authUser[0].listFriend.filter(friend => friend.uid===user.uid);
+    if(!isEmpty(authUser[0].listFriend) && authUser[0].listFriend.length === users.length) {// ton tai danh sach ban be va danh sach full
+      users.forEach((user) => {
+        user.info = authUser[0].listFriend.filter(friend => friend.uid===user.uid);
+      });
+      users.sort((a,b)=> b.info[0].lastMessage - a.info[0].lastMessage);
+      users.sort((a,b)=> b.info[0].star - a.info[0].star);
+    } else if(!isEmpty(authUser[0].listFriend) && authUser[0].listFriend.length < users.length) { // danh sach bi thieu
+      users.forEach((user) => {
+        var kt = false;
+        authUser[0].listFriend.forEach((friend) => {
+          if(friend.uid === user.uid) {
+            kt = true;
+            listFriend.push(friend);
+            return false
+          }
         });
-        users.sort((a,b)=> b.info[0].star - a.info[0].star);
-      } else { // danh sach bi thieu
-        users.forEach((user) => {
+        if(kt === false) {
           const info = {
             uid: user.uid,
             lastMessage: 0,
             star: false,
           };
           listFriend.push(info);
-        });
-        this.props.makeListFriend(this.props.auth.uid, listFriend);
-      }
-    } else { // chua co danh sach
+        }
+      });
+      this.props.makeListFriend(this.props.auth.uid, listFriend);
+    } else if(isEmpty(authUser[0].listFriend)) { // chua co danh sach
       users.forEach((user) => {
         const info = {
           uid: user.uid,
@@ -127,8 +137,8 @@ class Dashboard extends Component {
                   />
                 </div>    
                 <SendMessage
-                  displayName = {authUser[0].displayName}
-                  authId = {authUser[0].uid}
+                  authUser = {authUser[0]}
+                  chatUser = {users.filter(users=>users.uid === this.state.chatUserId)}
                   chatUserId = {this.state.chatUserId}
                   hashConversationID = {this.hashConversationID}
                 />

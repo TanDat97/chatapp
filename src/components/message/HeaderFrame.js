@@ -29,7 +29,7 @@ var buttonStarStyle = {
 const HeaderFrame = (props) => {
     var userChat = {};
     var conversation = {};
-     var info = {};
+    var info = {};
     const authId = props.authId;
     const chatUserId = props.chatUserId;
     const converID = props.hashConversationID(authId,chatUserId);

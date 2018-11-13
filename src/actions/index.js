@@ -91,12 +91,22 @@ export const getConversation = (authId, chatUserId) => {
   }
 }
 
-export const createConversation = (authId, chatUserId, text, displayName) => {
+export const createConversation = (authId, chatUserId, text, displayName, listFriend, listFriendChatUser) => {
   return (dispatch, getState ) => {
     const firestore = firebase.firestore();
     const hashId=hashConversationID(authId, chatUserId);
     const date = new Date(); // some mock date
     const createMilisecond = date.getTime();
+    listFriend.forEach(friend => {
+      if(friend.uid === chatUserId){
+        friend.lastMessage = createMilisecond;
+      }
+    });
+    listFriendChatUser.forEach(friend => {
+      if(friend.uid === authId){
+        friend.lastMessage = createMilisecond;
+      }
+    });
     firestore.collection('conversation').doc(hashId.toString()).set({
         createAt: createMilisecond,
         history: [
@@ -114,6 +124,16 @@ export const createConversation = (authId, chatUserId, text, displayName) => {
         ],
     })
     .then(() => {
+      firestore.collection('users').doc(authId).update({
+        listFriend: listFriend,
+      })
+    })
+    .then(() => {
+      firestore.collection('users').doc(chatUserId).update({
+        listFriend: listFriendChatUser,
+      })
+    })
+    .then(() => {
       dispatch({
         type: actionType.CREATE_CONVERSATION,
       });
@@ -127,12 +147,22 @@ export const createConversation = (authId, chatUserId, text, displayName) => {
   }
 }
 
-export const sendMessage = (authId, chatUserId, text, displayName, history) => {
+export const sendMessage = (authId, chatUserId, text, displayName, history, listFriend, listFriendChatUser) => {
   return (dispatch, getState ) => {
     const firestore = firebase.firestore();
     const hashId=hashConversationID(authId, chatUserId);
     const date = new Date(); // some mock date
     const createMilisecond = date.getTime();
+    listFriend.forEach(friend => {
+      if(friend.uid === chatUserId){
+        friend.lastMessage = createMilisecond;
+      }
+    });
+    listFriendChatUser.forEach(friend => {
+      if(friend.uid === authId){
+        friend.lastMessage = createMilisecond;
+      }
+    });
     firestore.collection('conversation').doc(hashId.toString()).update({
       history: [...history, {
         displayName: displayName, 
@@ -141,6 +171,16 @@ export const sendMessage = (authId, chatUserId, text, displayName, history) => {
         text: text
       }],
       lastMessage: createMilisecond,       
+    })
+    .then(() => {
+      firestore.collection('users').doc(authId).update({
+        listFriend: listFriend,
+      })
+    })
+    .then(() => {
+      firestore.collection('users').doc(chatUserId).update({
+        listFriend: listFriendChatUser,
+      })
     })
     .then(() => {
       dispatch({

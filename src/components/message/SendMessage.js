@@ -39,18 +39,21 @@ function handledUpLoad (file) {
 }
 
 const SendMessage = (props) => {
-    // console.log(props);
+    console.log(props);
     var conversation = {};
-    const displayName = props.displayName;
-    const authId = props.authId;
+    var chatUser = {};
+    const listFriend = props.authUser.listFriend;
+    const displayName = props.authUser.displayName;
+    const authId = props.authUser.id;
     const chatUserId = props.chatUserId;
-    const converID = props.hashConversationID(authId,chatUserId);
+    const converID = props.hashConversationID(authId, chatUserId);
     const fileReducer = props.fileReducer;
     const isUpload = props.upLoadReducer.isUpload;
     let input1, input2;
     
     if(chatUserId !=="" && !isEmpty(props.converdata)){
-        conversation = props.converdata.filter(conver => conver.id === converID.toString()); 
+        conversation = props.converdata.filter(conver => conver.id === converID.toString());
+        chatUser = props.chatUser[0];
         return (
             <form onSubmit={e => {
                 props.changeStateUpload();
@@ -59,14 +62,14 @@ const SendMessage = (props) => {
                     return
                 }
                 if (isEmpty(conversation)){
-                    props.createConversation(authId, chatUserId, input1.value, displayName);
+                    props.createConversation(authId, chatUserId, input1.value, displayName, listFriend, chatUser.listFriend);
                 } else if (!isEmpty(conversation) && isEmpty(fileReducer)){ 
-                    props.sendMessage(authId, chatUserId, input1.value, displayName, conversation[0].history);
+                    props.sendMessage(authId, chatUserId, input1.value, displayName, conversation[0].history, listFriend, chatUser.listFriend);
                 } else if (!isEmpty(conversation) && !isEmpty(fileReducer)) {
                     handledUpLoad(fileReducer.file)
                     .then((url) => {
                         props.clearFile();
-                        props.sendMessage(authId, chatUserId, url, displayName, conversation[0].history);
+                        props.sendMessage(authId, chatUserId, url, displayName, conversation[0].history, listFriend, chatUser.listFriend);
                         props.changeStateUpload();
                     })
                     .catch((err)=>console.log(err));
@@ -77,13 +80,15 @@ const SendMessage = (props) => {
                 <div className="chat-message clearfix align-left">
                     <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3" ref={node => input1 = node}></textarea>         
                     <i className="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
-                    <i className="fa fa-file-image-o">
-                        <input type="file" id="upImage" name="upImage" ref={node => input2 = node}
-                            onChange={event => {
-                                props.chooseFile(event.target.files[0]);
-                            }}
-                        />
-                    </i>
+                    <label htmlFor="upload-photo">
+                        <i className="fa fa-picture-o" aria-hidden="true" ></i>
+                    </label>
+                    <span>{!isEmpty(props.fileReducer) ? ' selected - ready to send' : null}</span>
+                    <input type="file" name="photo" id="upload-photo" ref={node => input2 = node}
+                        onChange={event => {
+                            props.chooseFile(event.target.files[0]);
+                        }} 
+                    />
                     <button>Send</button>
                     <div className="upload">
                         {(isUpload || isEmpty(props.fileReducer))?<div></div>:<ReactLoading type="spin" color="black" height={'25'} width={'25px'}/>}
@@ -113,8 +118,8 @@ const mapStateToProps = (state ,ownProps) => {
   
 const mapDispatchToProps =(dispatch) => {
     return {
-        sendMessage: (authId, chatUserId, text, displayName, history) => dispatch(sendMessage(authId, chatUserId, text, displayName, history)),
-        createConversation: (authId, chatUserId, text, displayName) => dispatch(createConversation(authId, chatUserId, text, displayName)),
+        sendMessage: (authId, chatUserId, text, displayName, history, listFriend, listFriendChatUser) => dispatch(sendMessage(authId, chatUserId, text, displayName, history, listFriend, listFriendChatUser)),
+        createConversation: (authId, chatUserId, text, displayName, listFriend, listFriendChatUser) => dispatch(createConversation(authId, chatUserId, text, displayName, listFriend, listFriendChatUser)),
         chooseFile: (file) => dispatch(chooseFile(file)),
         clearFile: () => dispatch(clearFile()),
         changeStateUpload: () => dispatch(changeStateUpload()),
