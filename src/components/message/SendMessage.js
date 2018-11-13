@@ -39,7 +39,7 @@ function handledUpLoad (file) {
 }
 
 const SendMessage = (props) => {
-    console.log(props);
+    // console.log(props);
     var conversation = {};
     var chatUser = {};
     const listFriend = props.authUser.listFriend;
@@ -56,7 +56,6 @@ const SendMessage = (props) => {
         chatUser = props.chatUser[0];
         return (
             <form onSubmit={e => {
-                props.changeStateUpload();
                 e.preventDefault()
                 if (!input1.value.trim() && isEmpty(fileReducer)) {
                     return
@@ -66,6 +65,7 @@ const SendMessage = (props) => {
                 } else if (!isEmpty(conversation) && isEmpty(fileReducer)){ 
                     props.sendMessage(authId, chatUserId, input1.value, displayName, conversation[0].history, listFriend, chatUser.listFriend);
                 } else if (!isEmpty(conversation) && !isEmpty(fileReducer)) {
+                    props.changeStateUpload();
                     handledUpLoad(fileReducer.file)
                     .then((url) => {
                         props.clearFile();

@@ -45,7 +45,7 @@ class Dashboard extends Component {
   }
 
   clickUser (userUID) { 
-    console.log(userUID);
+    // console.log(userUID);
     this.setState({
       chatUserId: userUID
     })
@@ -156,7 +156,7 @@ class Dashboard extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(state);
+  // console.log(state);
   return {
     users: state.firestore.ordered.users,
     converdata: state.firestore.ordered.conversation,
